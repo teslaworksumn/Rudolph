@@ -21,8 +21,9 @@ int CellRenderer::columnCount(const QModelIndex & /*parent*/) const
 
 QVariant CellRenderer::data(const QModelIndex &index, int role) const
 {
-
+   if(index.isValid() != true || role)
     return QVariant();
+   return QVariant();
 }
 QVariant CellRenderer::headerData(int section, const Qt::Orientation orientation, int role) const
 {

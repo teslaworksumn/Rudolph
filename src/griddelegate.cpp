@@ -27,6 +27,10 @@ void GridDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 QSize GridDelegate::sizeHint(const QStyleOptionViewItem &option,
                              const QModelIndex &index) const
 {
+    if(index.isValid()){
+        QStyleOptionViewItem error = option;
+        return QSize(1,1);
+    }
     return QSize(1, 1);
 
 }

@@ -27,7 +27,7 @@
    <widget class="QComboBox" name="rowSizeBox">
     <property name="geometry">
      <rect>
-      <x>70</x>
+      <x>80</x>
       <y>10</y>
       <width>65</width>
       <height>22</height>
@@ -39,8 +39,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>47</width>
-      <height>14</height>
+      <width>61</width>
+      <height>16</height>
      </rect>
     </property>
     <property name="text">
@@ -52,7 +52,7 @@
      <rect>
       <x>150</x>
       <y>10</y>
-      <width>61</width>
+      <width>91</width>
       <height>16</height>
      </rect>
     </property>
@@ -63,7 +63,7 @@
    <widget class="QComboBox" name="columnSizeBox">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>240</x>
       <y>10</y>
       <width>65</width>
       <height>22</height>
@@ -77,7 +77,7 @@
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

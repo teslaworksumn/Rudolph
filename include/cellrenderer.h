@@ -25,6 +25,7 @@ public:
 public slots:
     void editData(const QModelIndex & index);
     void editDataSpace(const QModelIndexList & index);
+    //void save();
 };
 
 

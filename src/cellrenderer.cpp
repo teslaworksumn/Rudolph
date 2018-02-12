@@ -79,3 +79,4 @@ void CellRenderer::editDataSpace(const QModelIndexList & indexList)
 
 
 
+

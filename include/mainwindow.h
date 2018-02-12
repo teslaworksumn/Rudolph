@@ -34,6 +34,8 @@ protected:
 
 signals:
     void space(const QModelIndexList &);
+    //void save();
+
 
 public slots:
     void updateViewRow(int size);

@@ -58,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     //transfer changes to the model to the window title
     connect(ui->tableView, SIGNAL(doubleClicked(const QModelIndex &)), CellRender, SLOT(editData(const QModelIndex &)));
     connect(this, SIGNAL(space(const QModelIndexList &)), CellRender, SLOT(editDataSpace(const QModelIndexList &)));
+
     connect(ui->rowSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewRow(int)));
     connect(ui->columnSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewColumn(int)));
 
@@ -74,7 +75,17 @@ bool MainWindow::eventFilter(QObject *object, QEvent *e)
                 emit space(ui->tableView->selectionModel()->selectedIndexes());
                 return true;
             }
+
         }
+        else if (e->type() == QEvent::KeyRelease)
+             {
+                QKeyEvent *key_event = static_cast<QKeyEvent*>(e);
+
+                if (key_event->matches(QKeySequence::Save))
+                {
+                   return true;
+                }
+             }
     }
 
     return false;
@@ -89,6 +100,7 @@ void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
     ui->tableView->resize((resizeEvent->size()) - QSize(60,90));
 
 }
+
 
 void MainWindow::updateViewRow(int size)
 {

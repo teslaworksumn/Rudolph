@@ -28,13 +28,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         ./src/main.cpp \
         ./src/mainwindow.cpp \
-    ./src/cellrenderer.cpp \
-    ./src/griddelegate.cpp
+        ./src/cellrenderer.cpp \
+        ./src/griddelegate.cpp \
+        ./src/sequence.cpp \
+        ./src/project.cpp  \
 
 HEADERS += \
         ./include/mainwindow.h \
-    ./include/cellrenderer.h \
-    ./include/griddelegate.h
+        ./include/cellrenderer.h \
+        ./include/griddelegate.h \
+        ./include/sequence.h \
+        ./include/project.h
 
 FORMS += \
     mainwindow.ui

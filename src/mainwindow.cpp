@@ -7,9 +7,8 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent),
-      ui(new Ui::MainWindow)
-
+        : QMainWindow(parent),
+        ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->tableView->installEventFilter(this);
@@ -43,17 +42,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->columnSizeBox->addItem(tr("90%"));
     ui->columnSizeBox->addItem(tr("100%"));
 
-
-
-
     for (int col = 0; col < CellRender->columnCount(); col++) {
         ui->tableView->setColumnWidth(col, 15); // pixel width of cells // needs to be resizeable in future
-
     }
+
     for (int row = 0; row < CellRender->rowCount(); row++) {
         ui->tableView->setRowHeight(row, 15); // pixel height of cells // needs to be resizeable in future
     }
-
 
     //transfer changes to the model to the window title
     connect(ui->tableView, SIGNAL(doubleClicked(const QModelIndex &)), CellRender, SLOT(editData(const QModelIndex &)));
@@ -87,7 +82,6 @@ MainWindow::~MainWindow() {
 void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
     ui->tableView->resize((resizeEvent->size()) - QSize(60,90));
-
 }
 
 void MainWindow::updateViewRow(int size)
@@ -122,6 +116,7 @@ void MainWindow::updateViewRow(int size)
         ui->tableView->setRowHeight(row, cellSize); // pixel height of cells // needs to be resizeable in future
     }
 }
+
 void MainWindow::updateViewColumn(int size)
 {
     int cellSize = 5;
@@ -153,12 +148,4 @@ void MainWindow::updateViewColumn(int size)
     for (int col = 0; col < ui->tableView->model()->columnCount(); col++) {
         ui->tableView->setColumnWidth(col, cellSize); // pixel width of cells // needs to be resizeable in future
     }
-
 }
-
-
-
-
-
-
-

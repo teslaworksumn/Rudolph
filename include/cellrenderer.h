@@ -4,13 +4,10 @@
 #include <QAbstractTableModel>
 #include <QString>
 
-
 const int COLS= 86400;
 const int ROWS= 1024;
 const int timeInterval = 25;
 extern int gridData[ROWS][COLS];
-
-
 
 class CellRenderer : public QAbstractTableModel
 {

@@ -22,7 +22,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 private:
-    Ui::MainWindow*ui;
+    Ui::MainWindow *ui;
     QTableView *tableView;
 
 public:
@@ -37,7 +37,7 @@ signals:
 
 public slots:
     void updateViewRow(int size);
-     void updateViewColumn(int size);
+    void updateViewColumn(int size);
 };
 
 #endif // MAINWINDOW_H

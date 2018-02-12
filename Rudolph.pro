@@ -29,12 +29,14 @@ SOURCES += \
         ./src/main.cpp \
         ./src/mainwindow.cpp \
     ./src/cellrenderer.cpp \
-    ./src/griddelegate.cpp
+    ./src/griddelegate.cpp \
+    ./src/playbackline.cpp
 
 HEADERS += \
         ./include/mainwindow.h \
     ./include/cellrenderer.h \
-    ./include/griddelegate.h
+    ./include/griddelegate.h \
+    ./include/playbackline.h
 
 FORMS += \
     mainwindow.ui

@@ -14,9 +14,12 @@ GridDelegate::GridDelegate(QWidget *parent)
 void GridDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         const QModelIndex &index) const
 {
+    // change color of cells
     if ( gridData[index.row()][index.column()] != 0) {
         painter->fillRect(option.rect, Qt::red);
     }
+
+    // change color of selected cells
     if (option.state & QStyle::State_Selected) {
         painter->fillRect(option.rect, option.palette.highlight());
     }

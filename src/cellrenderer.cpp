@@ -47,7 +47,7 @@ QVariant CellRenderer::headerData(int section, const Qt::Orientation orientation
     if (orientation == Qt::Vertical && role == Qt::DisplayRole)
     {
         QString sectionString = QVariant(section).toString();
-        return QString("Channel") + sectionString;
+        return QString("Channel ") + sectionString;
     }
 
     return QVariant();
@@ -65,7 +65,8 @@ void CellRenderer::editData(const QModelIndex & index)
 
 void CellRenderer::editDataSpace(const QModelIndexList & indexList)
 {
-    for(QModelIndex index :indexList){
+    // go through every cell in selection and change value
+    for(QModelIndex index : indexList){
         if(gridData[index.row()][index.column()] == 255){
             gridData[index.row()][index.column()] = 0;
         }

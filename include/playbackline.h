@@ -13,8 +13,6 @@ public:
     PlaybackLine(QWidget *parent = 0);
     ~PlaybackLine();
 
-private:
-    QWidget *m_parent;
 };
 #endif // PLAYBACKLINE_H
 

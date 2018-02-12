@@ -5,7 +5,6 @@
 
 PlaybackLine::PlaybackLine(QWidget *parent) : QFrame(parent)
 {
-    m_parent = parent;
 }
 
 PlaybackLine::~PlaybackLine()

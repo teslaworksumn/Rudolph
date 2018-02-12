@@ -45,7 +45,6 @@ MainWindow::MainWindow(QWidget *parent)
     for (int col = 0; col < CellRender->columnCount(); col++) {
         ui->tableView->setColumnWidth(col, 15); // pixel width of cells // needs to be resizeable in future
     }
-
     for (int row = 0; row < CellRender->rowCount(); row++) {
         ui->tableView->setRowHeight(row, 15); // pixel height of cells // needs to be resizeable in future
     }

@@ -41,5 +41,5 @@ HEADERS += \
         ./include/project.h
 
 FORMS += \
-    mainwindow.ui
+    ./uiforms/mainwindow.ui
 

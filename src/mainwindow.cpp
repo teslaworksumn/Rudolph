@@ -11,6 +11,9 @@ MainWindow::MainWindow(QWidget *parent)
         ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QMainWindow::showMaximized(); // make Rudolph maximized on startup
+
     ui->tableView->installEventFilter(this);
     QAbstractTableModel *CellRender = new CellRenderer(this);
     ui->tableView->setModel(CellRender);
@@ -42,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->columnSizeBox->addItem(tr("90%"));
     ui->columnSizeBox->addItem(tr("100%"));
 
+
     for (int col = 0; col < CellRender->columnCount(); col++) {
         ui->tableView->setColumnWidth(col, 15); // pixel width of cells // needs to be resizeable in future
     }
@@ -55,6 +59,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->rowSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewRow(int)));
     connect(ui->columnSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewColumn(int)));
 
+    qDebug() << "height: " << ui->tableView->height();
+    qDebug() << "central widget height: " << ui->centralwidget->height();
+    ui->scrollingLine->setGeometry(ui->tableView->x(), ui->tableView->y(), 1, ui->tableView->height());
+    QPalette pal = palette();
+    pal.setColor(QPalette::Background, Qt::red);
+    ui->scrollingLine->setAutoFillBackground(true);
+    ui->scrollingLine->setPalette(pal);
+    ui->scrollingLine->show();
 }
 
 bool MainWindow::eventFilter(QObject *object, QEvent *e)
@@ -81,6 +93,15 @@ MainWindow::~MainWindow() {
 void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
     ui->tableView->resize((resizeEvent->size()) - QSize(60,90));
+    ui->scrollingLine->setGeometry(ui->tableView->x() + ui->tableView->verticalHeader()->width(), ui->tableView->y(), 1, ui->tableView->height());
+    //qDebug() << "vertical offset: " << ui->tableView->;
+    //qDebug() << "scroll bar " << ui->tableView->scroll();
+    //ui->scrollingLine->resize((ui->tableView->size()));
+    //qDebug() << "height1: " << ui->tableView->ScrollHint
+    //qDebug() << "central widget height1: " << ui->centralwidget->height();
+    qDebug() << "vheader size: " << ui->tableView->verticalHeader()->size();
+    qDebug() << "vheader height: " << ui->tableView->verticalHeader()->height();
+    qDebug() << "vheader width: " << ui->tableView->verticalHeader()->width();
 }
 
 void MainWindow::updateViewRow(int size)

@@ -5,6 +5,7 @@
 #include <QFrame>
 #include <QWidget>
 #include <QtGui>
+#include <QPropertyAnimation>
 
 class PlaybackLine : public QFrame
 {

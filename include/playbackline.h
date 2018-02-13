@@ -13,6 +13,8 @@ public:
     PlaybackLine(QWidget *parent = 0);
     ~PlaybackLine();
 
+public slots:
+    void move(bool mustMove);
 };
 #endif // PLAYBACKLINE_H
 

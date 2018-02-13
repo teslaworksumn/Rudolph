@@ -53,12 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->tableView->setRowHeight(row, 15); // pixel height of cells // needs to be resizeable in future
     }
 
-    //transfer changes to the model to the window title
-    connect(ui->tableView, SIGNAL(doubleClicked(const QModelIndex &)), CellRender, SLOT(editData(const QModelIndex &)));
-    connect(this, SIGNAL(space(const QModelIndexList &)), CellRender, SLOT(editDataSpace(const QModelIndexList &)));
-    connect(ui->rowSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewRow(int)));
-    connect(ui->columnSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewColumn(int)));
-
+    // TODO: extract into different function
     qDebug() << "height: " << ui->tableView->height();
     qDebug() << "central widget height: " << ui->centralwidget->height();
     ui->scrollingLine->setGeometry(ui->tableView->x() + ui->tableView->verticalHeader()->width(), // place at beginning of first column
@@ -66,10 +61,19 @@ MainWindow::MainWindow(QWidget *parent)
                                    1,
                                    ui->tableView->height() - ui->tableView->horizontalScrollBar()->height()); // don't overlap bottom scroll bar
     QPalette pal = palette();
-    pal.setColor(QPalette::Background, Qt::red);
+    pal.setColor(QPalette::Background, Qt::red); // TODO: make color a user option(?)
     ui->scrollingLine->setAutoFillBackground(true);
     ui->scrollingLine->setPalette(pal);
     ui->scrollingLine->show();
+
+
+    connect(ui->tableView, SIGNAL(doubleClicked(const QModelIndex &)), CellRender, SLOT(editData(const QModelIndex &)));
+    connect(this, SIGNAL(space(const QModelIndexList &)), CellRender, SLOT(editDataSpace(const QModelIndexList &)));
+    connect(ui->rowSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewRow(int)));
+    connect(ui->columnSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewColumn(int)));
+
+    // types need to be the same
+    connect(ui->playSequenceButton, SIGNAL(clicked(bool)), ui->scrollingLine, SLOT(move(bool)));
 }
 
 bool MainWindow::eventFilter(QObject *object, QEvent *e)

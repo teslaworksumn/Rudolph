@@ -61,7 +61,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     qDebug() << "height: " << ui->tableView->height();
     qDebug() << "central widget height: " << ui->centralwidget->height();
-    ui->scrollingLine->setGeometry(ui->tableView->x(), ui->tableView->y(), 1, ui->tableView->height());
+    ui->scrollingLine->setGeometry(ui->tableView->x() + ui->tableView->verticalHeader()->width(), // place at beginning of first column
+                                   ui->tableView->y(),
+                                   1,
+                                   ui->tableView->height() - ui->tableView->horizontalScrollBar()->height()); // don't overlap bottom scroll bar
     QPalette pal = palette();
     pal.setColor(QPalette::Background, Qt::red);
     ui->scrollingLine->setAutoFillBackground(true);
@@ -93,15 +96,10 @@ MainWindow::~MainWindow() {
 void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
     ui->tableView->resize((resizeEvent->size()) - QSize(60,90));
-    ui->scrollingLine->setGeometry(ui->tableView->x() + ui->tableView->verticalHeader()->width(), ui->tableView->y(), 1, ui->tableView->height());
-    //qDebug() << "vertical offset: " << ui->tableView->;
-    //qDebug() << "scroll bar " << ui->tableView->scroll();
-    //ui->scrollingLine->resize((ui->tableView->size()));
-    //qDebug() << "height1: " << ui->tableView->ScrollHint
-    //qDebug() << "central widget height1: " << ui->centralwidget->height();
-    qDebug() << "vheader size: " << ui->tableView->verticalHeader()->size();
-    qDebug() << "vheader height: " << ui->tableView->verticalHeader()->height();
-    qDebug() << "vheader width: " << ui->tableView->verticalHeader()->width();
+    ui->scrollingLine->setGeometry(ui->tableView->x() + ui->tableView->verticalHeader()->width(), // place at beginning of first column
+                                   ui->tableView->y(),
+                                   1,
+                                   ui->tableView->height() - ui->tableView->horizontalScrollBar()->height()); // don't overlap bottom scroll bar
 }
 
 void MainWindow::updateViewRow(int size)

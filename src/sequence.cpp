@@ -63,108 +63,20 @@ QVector<QVector<int> > Sequence::getGrid() {
 }
 
 void Sequence::save() {
-    std::string frame_dur = std::to_string(getFrameDur());
-    std::string cols = std::to_string(getCols());
-    std::string rows = std::to_string(getRows());
-
-    std::ofstream file (getName() + ".json");
-     file << "{\"name\":\"" <<getName()<<"\",\"music_file\":\"" <<getName() <<".ogg\",\"frame_dur_ms\":"
-            <<frame_dur <<"\",\"num_frames\":" << cols << ",\"rows\":" <<rows<< ",\"data\":" << "\n" << "[";
-
-     QVector< QVector< int > > gridsave= gridData;
-     for(int i =0; i<getCols();i++){
-         file << "[";
-             for (int j = 0; j<getRows();j++ ){
-                 if( i == getCols()-1 && j== getRows()-1){
-                     file << std::to_string(gridsave[i][j]) << "]";
-                 }
-                 else if (j == getRows()-1){
-                     file << std::to_string(gridsave[i][j]) << "],";
-                     }
-
-                 else{
-                     file <<std::to_string(gridsave[i][j])<<",";
-                 }
-             }
-
-}
-     file << "]";
-
+    QFile file("file.dat");
+    file.open(QIODevice::WriteOnly);
+    QDataStream out(&file);   // we will serialize the data into the file
+    out << gridData;   // serialize a string
  }
 
 void Sequence::load() {
     QFileDialogTester test;
     QString filePath = test.openFile();
-    std::string fileString = filePath.toUtf8().constData();
-    std::ifstream File(fileString.c_str());
-    std::string firstline;
-    std::string secondline;
-    std::string colsub;
-    std::string col;
-    std::string rowsub;
-    std::string row;
-    std::string num_frames = "num_frames\":" ;
-    std::string rows = ",\"rows\":" ;
-    std::string data = ",\"data\":";
-    File >> firstline;
-    File >> secondline;
-    std::string thirdline = secondline;
-    std::cout <<thirdline<< "here" <<std::endl;
-
-    std::size_t found = firstline.find(num_frames);
-    if (found!=std::string::npos){
-        colsub = firstline.substr(found,firstline.length());
-    }
-    std::size_t found2 = colsub.find(rows);
-    if (found2!=std::string::npos){
-        col = colsub.substr(num_frames.length(),found2-rows.length()-4);
-    }
-
-    std::size_t found3 = firstline.find(rows);
-    if (found3!=std::string::npos){
-        rowsub = firstline.substr(found3,firstline.length());
-    }
-    std::size_t found4 = rowsub.find(data);
-    if (found4!=std::string::npos){
-        row = rowsub.substr(rows.length(),found4-data.length()-5);
-    }
-
-    int cols = std::stoi(col);
-    int rowss = std::stoi(row);
-    std::stringstream ss(secondline);
-    int temp =0;
-    QVector< QVector< int > > gridLoad;
-    int count =0;
-    int count2 =0;
-    for(int i =0; i<cols;i++){
-        QVector<int> column;
-        gridLoad.push_back(column);
-
-    }
-    QVector< QVector< int > > gridCurrent = gridData;
-
-        for( int i = 0; i<secondline.length(); i++){
-        if((secondline[i] >= '0') && (secondline[i] <= '9')){
-            int accum = i+1;
-            std::string accums = "";
-                    accums += secondline[i];
-            while(secondline[accum] != ']'  && secondline[accum] != ',' ){
-                accums += secondline[accum];
-                accum++;
-            }
-                 int stringInt = std::stoi(accums);
-                 gridLoad[count].push_back(stringInt);
-                   count2++;
-                i = i+accums.length();
-                }
-
-        if(count2 == rowss){
-            count ++;
-            count2 =0;
-        }
-}
-
-
-        gridData = gridLoad;
+    QFile file(filePath);
+    file.open(QIODevice::ReadOnly);
+    QDataStream in(&file);    // read the data serialized from the file
+    QVector<QVector<int> > gridIn;
+    in >> gridIn;
+    gridData = gridIn;
 
 }

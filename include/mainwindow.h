@@ -3,12 +3,15 @@
 
 #include <QtWidgets>
 #include <QMainWindow>
-#include <QTableView>
-#include "mainwindow.h"
-#include "cellrenderer.h"
-#include "ui_mainwindow.h"
 #include <QKeyEvent>
 #include <QAbstractTableModel>
+#include <QTableView>
+#include "./include/cellrenderer.h"
+#include "./include/griddelegate.h"
+#include "./include/sequence.h"
+#include "ui_mainwindow.h"
+
+
 
 QT_BEGIN_NAMESPACE // QT_BEGIN_NAMESPACE / QT_END_NAMESPACE are not needed in Qt user code
 class QTableView; //forward declaration
@@ -34,12 +37,12 @@ protected:
 
 signals:
     void space(const QModelIndexList &);
-    //void save();
+    void save();
 
 
 public slots:
     void updateViewRow(int size);
-     void updateViewColumn(int size);
+    void updateViewColumn(int size);
 };
 
 #endif // MAINWINDOW_H

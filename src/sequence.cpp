@@ -4,7 +4,7 @@
 #include <QtDebug>
 #include <sstream>
 #include <iostream>
-#include <QVector>
+#include <QList>
 
 
 
@@ -58,15 +58,18 @@ int Sequence::getFrameDur() {
     return frame_dur;
 }
 
-QVector<QVector<int> > Sequence::getGrid() {
+QList<QList<int8_t> > Sequence::getGrid() {
     return gridData;
 }
 
 void Sequence::save() {
-    QFile file("file.dat");
-    file.open(QIODevice::WriteOnly);
+    QFile file("byronsucks.rud");
+    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
+
     QDataStream out(&file);   // we will serialize the data into the file
     out << gridData;   // serialize a string
+
+    file.close();
  }
 
 void Sequence::load() {
@@ -75,7 +78,7 @@ void Sequence::load() {
     QFile file(filePath);
     file.open(QIODevice::ReadOnly);
     QDataStream in(&file);    // read the data serialized from the file
-    QVector<QVector<int> > gridIn;
+    QList<QList<int8_t> > gridIn;
     in >> gridIn;
     gridData = gridIn;
 

@@ -1,9 +1,9 @@
 #include "./include/cellrenderer.h"
 #include <QBrush>
 #include <QVariant>
-#include <QVector>
+#include <QList>
 
-QVector< QVector< int > > gridData;
+QList< QList< int8_t > > gridData;
 
 
 CellRenderer::CellRenderer(QObject *parent)
@@ -11,7 +11,7 @@ CellRenderer::CellRenderer(QObject *parent)
 {
 
     for (int i = 0; i < COLS; i++) {
-        QVector<int> col;
+        QList<int8_t> col;
         for (int j = 0; j < ROWS; j++) {
             col.push_back(0);
         }
@@ -48,8 +48,6 @@ QVariant CellRenderer::headerData(int section, const Qt::Orientation orientation
       else{
           return QString("|");
       }
-
-
     }
 
     // VERTICAL HEADER: PUs
@@ -59,7 +57,7 @@ QVariant CellRenderer::headerData(int section, const Qt::Orientation orientation
         QString sectionString = QVariant(section).toString();
         return QString("Channel") + sectionString;
 
-            }
+    }
     return QVariant();
 
 }

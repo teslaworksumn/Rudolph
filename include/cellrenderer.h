@@ -3,12 +3,13 @@
 
 #include <QAbstractTableModel>
 #include <QString>
+#include <QList>
 
 
 const int COLS= 86400;
 const int ROWS= 1024;
 const int timeInterval = 25;
-extern QVector< QVector< int > > gridData;
+extern QList< QList< int8_t > > gridData;
 
 
 

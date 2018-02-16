@@ -1,11 +1,22 @@
 #include "./include/cellrenderer.h"
 #include <QBrush>
 #include <QVariant>
+#include <QVector>
 
-int gridData[ROWS][COLS];
+QVector< QVector< int > > gridData;
+
+
 CellRenderer::CellRenderer(QObject *parent)
     :QAbstractTableModel(parent)
 {
+
+    for (int i = 0; i < COLS; i++) {
+        QVector<int> col;
+        for (int j = 0; j < ROWS; j++) {
+            col.push_back(0);
+        }
+        gridData.append(col);
+    }
 
 }
 
@@ -55,22 +66,22 @@ QVariant CellRenderer::headerData(int section, const Qt::Orientation orientation
 
 void CellRenderer::editData(const QModelIndex & index)
 {
-    if(gridData[index.row()][index.column()] == 255){
-    gridData[index.row()][index.column()] = 0;
+    if(gridData[index.column()][index.row()] == 255){
+    gridData[index.column()][index.row()] = 0;
     }
     else {
-        gridData[index.row()][index.column()] = 255;
+        gridData[index.column()][index.row()] = 255;
     }
 }
 
 void CellRenderer::editDataSpace(const QModelIndexList & indexList)
 {
     for(QModelIndex index :indexList){
-        if(gridData[index.row()][index.column()] == 255){
-        gridData[index.row()][index.column()] = 0;
+        if(gridData[index.column()][index.row()] == 255){
+        gridData[index.column()][index.row()] = 0;
         }
         else {
-            gridData[index.row()][index.column()] = 255;
+            gridData[index.column()][index.row()] = 255;
         }
     }
 }

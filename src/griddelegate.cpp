@@ -14,7 +14,7 @@ GridDelegate::GridDelegate(QWidget *parent)
 void GridDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                          const QModelIndex &index) const
 {
-    if ( gridData[index.row()][index.column()] != 0) {
+    if ( gridData[index.column()][index.row()] != 0) {
             painter->fillRect(option.rect, Qt::red);
 
 }

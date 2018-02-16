@@ -58,7 +58,7 @@ int Sequence::getFrameDur() {
     return frame_dur;
 }
 
-QList<QList<int8_t> > Sequence::getGrid() {
+QList<QList<uint8_t> > Sequence::getGrid() {
     return gridData;
 }
 
@@ -78,7 +78,7 @@ void Sequence::load() {
     QFile file(filePath);
     file.open(QIODevice::ReadOnly);
     QDataStream in(&file);    // read the data serialized from the file
-    QList<QList<int8_t> > gridIn;
+    QList<QList<uint8_t> > gridIn;
     in >> gridIn;
     gridData = gridIn;
 

@@ -14,7 +14,7 @@ class Sequence : public QObject
 {
     Q_OBJECT
 private:
-    QList< QList< int8_t > > grid;
+    QList< QList< uint8_t > > grid;
     int ROWS;
     int COLS;
     std::string sequenceName;
@@ -28,7 +28,7 @@ public:
     int getFrameDur();
     QString openFile();
     std::string getName();
-    QList< QList< int8_t > > getGrid();
+    QList< QList< uint8_t > > getGrid();
 
 public slots:
     void save();

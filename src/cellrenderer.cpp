@@ -3,7 +3,7 @@
 #include <QVariant>
 #include <QList>
 
-QList< QList< int8_t > > gridData;
+QList< QList< uint8_t > > gridData;
 
 
 CellRenderer::CellRenderer(QObject *parent)
@@ -11,7 +11,7 @@ CellRenderer::CellRenderer(QObject *parent)
 {
 
     for (int i = 0; i < COLS; i++) {
-        QList<int8_t> col;
+        QList<uint8_t> col;
         for (int j = 0; j < ROWS; j++) {
             col.push_back(0);
         }

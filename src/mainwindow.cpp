@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableView->setItemDelegate(GridPainter);
     ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    std::string sequenceName = "current";
+    QString sequenceName = "current";
     Sequence *currentSequence = new Sequence(CellRender->rowCount(),CellRender->columnCount(),25,sequenceName);
 
     ui->rowSizeBox->addItem(tr("10%"));

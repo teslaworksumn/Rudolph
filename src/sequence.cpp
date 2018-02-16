@@ -5,9 +5,8 @@
 #include <sstream>
 #include <iostream>
 #include <QList>
-
-
-
+#include <QString>
+#include <QStandardPaths>
 
 // code modified from http://www.codebind.com/cpp-tutorial/qt-tutorial/qt-tutorials-beginners-qfiledialog-getopenfilename-example/
 class QFileDialogTester : public QWidget
@@ -32,17 +31,17 @@ public:
 Sequence::Sequence() {
     ROWS =0;
     COLS =0;
-    sequenceName ="";
+    sequenceName = "untitled";
 }
 
-Sequence::Sequence(int rows, int cols, int dur, std::string name) {
+Sequence::Sequence(int rows, int cols, int dur, QString name) {
     ROWS =rows;
     COLS =cols;
     sequenceName = name;
     frame_dur = dur;
 }
 
-std::string Sequence::getName() {
+QString Sequence::getName() {
     return sequenceName;
 }
 
@@ -63,7 +62,17 @@ QList<QList<uint8_t> > Sequence::getGrid() {
 }
 
 void Sequence::save() {
-    QFile file("byronsucks.rud");
+    QString filePath = QDir().homePath();
+    qDebug() << "Home: " << filePath << endl;
+
+    if (QDir(filePath).mkdir("Rudolph")) {
+        qDebug() << "Created folder" << endl;
+    } else {
+        qDebug() << "Could not create folder" << endl;
+    }
+
+    QString fileName = filePath + "/Rudolph/" + sequenceName + ".rud";
+    QFile file(fileName);
     file.open(QIODevice::WriteOnly | QIODevice::Truncate);
 
     QDataStream out(&file);   // we will serialize the data into the file

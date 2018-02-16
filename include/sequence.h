@@ -17,17 +17,17 @@ private:
     QList< QList< uint8_t > > grid;
     int ROWS;
     int COLS;
-    std::string sequenceName;
+    QString sequenceName;
     int frame_dur;
 
 public:
     Sequence() ;
-    Sequence(int rows, int cols, int dur, std::string name);
+    Sequence(int rows, int cols, int dur, QString name);
     int getRows();
     int getCols();
     int getFrameDur();
     QString openFile();
-    std::string getName();
+    QString getName();
     QList< QList< uint8_t > > getGrid();
 
 public slots:

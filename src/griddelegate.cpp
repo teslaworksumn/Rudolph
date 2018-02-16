@@ -15,12 +15,11 @@ void GridDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                          const QModelIndex &index) const
 {
     if ( gridData[index.column()][index.row()] != 0) {
-            painter->fillRect(option.rect, Qt::red);
+        painter->fillRect(option.rect, Qt::red);
 
-}
-        if (option.state & QStyle::State_Selected)
-            painter->fillRect(option.rect, option.palette.highlight());
-
+    }
+    if (option.state & QStyle::State_Selected)
+        painter->fillRect(option.rect, option.palette.highlight());
 
 }
 

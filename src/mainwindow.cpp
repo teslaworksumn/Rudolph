@@ -53,6 +53,16 @@ MainWindow::MainWindow(QWidget *parent)
         ui->tableView->setRowHeight(row, 15); // pixel height of cells // needs to be resizeable in future
     }
 
+
+
+    connect(ui->tableView, SIGNAL(doubleClicked(const QModelIndex &)), CellRender, SLOT(editData(const QModelIndex &)));
+    connect(this, SIGNAL(space(const QModelIndexList &)), CellRender, SLOT(editDataSpace(const QModelIndexList &)));
+    connect(ui->rowSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewRow(int)));
+    connect(ui->columnSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewColumn(int)));
+
+    // types need to be the same
+    connect(ui->playSequenceButton, SIGNAL(clicked(bool)), ui->scrollingLine, SLOT(move(bool)));
+
     // TODO: extract into different function
     qDebug() << "height: " << ui->tableView->height();
     qDebug() << "central widget height: " << ui->centralwidget->height();
@@ -66,14 +76,39 @@ MainWindow::MainWindow(QWidget *parent)
     ui->scrollingLine->setPalette(pal);
     ui->scrollingLine->show();
 
+    //QPropertyAnimation animation(ui->scrollingLine, "geometry");
+    //animation.setDuration(1000);
+    //animation.setStartValue(QRect(ui->scrollingLine->x(), ui->scrollingLine->y(), ui->scrollingLine->width(), ui->scrollingLine->height()));
+    //qDebug() << "got past start value";
+    //animation.setEndValue(QRect(ui->scrollingLine->x() + 500,ui->scrollingLine->y(), ui->scrollingLine->width(), ui->scrollingLine->height()));
 
-    connect(ui->tableView, SIGNAL(doubleClicked(const QModelIndex &)), CellRender, SLOT(editData(const QModelIndex &)));
-    connect(this, SIGNAL(space(const QModelIndexList &)), CellRender, SLOT(editDataSpace(const QModelIndexList &)));
-    connect(ui->rowSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewRow(int)));
-    connect(ui->columnSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewColumn(int)));
+    QFrame *button = new QFrame(this);
+    button->setGeometry(20, 20, 100, 30);
+    button->setAutoFillBackground(true);
+    button->setPalette(pal);
+    button->show();
 
-    // types need to be the same
-    connect(ui->playSequenceButton, SIGNAL(clicked(bool)), ui->scrollingLine, SLOT(move(bool)));
+    QPropertyAnimation *animation = new QPropertyAnimation(button, "geometry");
+    animation->setDuration(10000);
+    animation->setStartValue(QRect(0, 0, 100, 30));
+    animation->setEndValue(QRect(250, 250, 100, 30));
+
+    connect(animation, SIGNAL(finished()), animation, SLOT(deleteLater()));
+    animation->start();
+
+/*
+    QPushButton *button = new QPushButton(this);
+    button->setGeometry(0, 0, 100, 30);
+    button->show();
+
+    QPropertyAnimation *animation = new QPropertyAnimation(button, "geometry");
+    animation->setDuration(10000);
+    animation->setStartValue(QRect(0, 0, 100, 30));
+    animation->setEndValue(QRect(250, 250, 100, 30));
+
+    connect(animation, SIGNAL(finished()), animation, SLOT(deleteLater()));
+    animation->start();
+*/
 }
 
 bool MainWindow::eventFilter(QObject *object, QEvent *e)

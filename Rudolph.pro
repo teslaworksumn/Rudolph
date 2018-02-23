@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += widgets core gui
+QT       += widgets core gui testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,13 +32,15 @@ SOURCES += \
         ./src/griddelegate.cpp \
         ./src/sequence.cpp \
         ./src/project.cpp  \
+        ./src/playbackline.cpp
 
 HEADERS += \
         ./include/mainwindow.h \
         ./include/cellrenderer.h \
         ./include/griddelegate.h \
         ./include/sequence.h \
-        ./include/project.h
+        ./include/project.h \
+        ./include/playbackline.h
 
 FORMS += \
     ./uiforms/mainwindow.ui

@@ -26,17 +26,32 @@ MainWindow::MainWindow(QWidget *parent)
     QString sequenceName = "current";
     Sequence *currentSequence = new Sequence(CellRender->rowCount(),CellRender->columnCount(),25,sequenceName);
 
+    QMenu *rowSize = ui->menuView->addMenu("Row Size");
+    QMenu *colSize = ui->menuView->addMenu("Column Size");
+    QSignalMapper* signalMapperRow = new QSignalMapper (this) ;
+    QSignalMapper* signalMapperCol = new QSignalMapper (this) ;
+
     for (int i = 0; i< 10; i++){
         QString s = QString::number((i*10) +10);
         s.append( "%");
+        QAction *resizeRow = new QAction(s);
+        QAction *resizeCol = new QAction(s);
+        connect(resizeRow, SIGNAL(triggered()), signalMapperRow, SLOT(map()));
+        connect(resizeCol, SIGNAL(triggered()), signalMapperCol, SLOT(map()));
+        signalMapperCol -> setMapping(resizeCol, i);
+        signalMapperRow -> setMapping(resizeRow, i);
 
-        ui->rowSizeBox->addItem(s);
-        ui->columnSizeBox->addItem(s);
-
+        rowSize->addAction(resizeRow);
+        colSize->addAction(resizeCol);
     }
+    connect ( signalMapperRow, SIGNAL(mapped(int)),this, SLOT(updateViewRow(int)));
+
+    connect ( signalMapperCol, SIGNAL(mapped(int)),this, SLOT(updateViewColumn(int)));
 
     ui->tableView->setAutoScroll(true);
-    // ui->tableView->horizontalScrollMode();
+
+    ui->playButton->setText("\u25B6");
+    ui->stopButton->setText("\u25FC");
 
 
     QPalette pal = palette();
@@ -62,8 +77,8 @@ MainWindow::MainWindow(QWidget *parent)
     //transfer changes to the model to the window title
     connect(ui->tableView, SIGNAL(doubleClicked(const QModelIndex &)), CellRender, SLOT(editData(const QModelIndex &)));
     connect(this, SIGNAL(space(const QModelIndexList &)), CellRender, SLOT(editDataSpace(const QModelIndexList &)));
-    connect(ui->save, SIGNAL(clicked()), currentSequence, SLOT(save()));
-    connect(ui->load, SIGNAL(clicked()), currentSequence, SLOT(load()));
+    connect(ui->actionSave, SIGNAL(triggered(bool)), currentSequence, SLOT(save()));
+    connect(ui->actionLoad, SIGNAL(triggered(bool)), currentSequence, SLOT(load()));
     connect(this, SIGNAL(save()), currentSequence, SLOT(save()));
     connect(ui->rowSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewRow(int)));
     connect(ui->columnSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewColumn(int)));
@@ -209,9 +224,10 @@ void MainWindow::onTimerScroll()
 {
     QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
     QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
-        int delay = ( ((3 * (right.column() - left.column())))/4);
+        int thirds = (3*(right.column() - left.column()));
+        int delay = (thirds/4);
         QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
-                    ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + delay );
+                    ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + delay +2 ); // weird column matching here
         ui->tableView->scrollTo(nextIndex, QAbstractItemView::EnsureVisible);
 }
 

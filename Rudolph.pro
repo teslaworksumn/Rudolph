@@ -8,7 +8,7 @@ QT       += widgets core gui testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Rudolph
+TARGET = main
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -32,7 +32,8 @@ SOURCES += \
         ./src/griddelegate.cpp \
         ./src/sequence.cpp \
         ./src/project.cpp  \
-        ./src/playbackline.cpp
+        ./src/playbackline.cpp \
+    src/newwizard.cpp
 
 HEADERS += \
         ./include/mainwindow.h \
@@ -44,4 +45,7 @@ HEADERS += \
 
 FORMS += \
     ./uiforms/mainwindow.ui
+
+RESOURCES += \
+    ./resources/teslaworks.qrc
 

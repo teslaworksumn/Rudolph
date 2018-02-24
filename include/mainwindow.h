@@ -12,9 +12,6 @@
 #include "ui_mainwindow.h"
 
 
-
-
-
 QT_BEGIN_NAMESPACE // QT_BEGIN_NAMESPACE / QT_END_NAMESPACE are not needed in Qt user code
 class QTableView; //forward declaration
 QT_END_NAMESPACE
@@ -41,11 +38,13 @@ signals:
     void space(const QModelIndexList &);
     void save();
     void stopLine();
+    void timing();
 
 
 public slots:
     void updateViewRow(int size);
     void updateViewColumn(int size);
+    void updateViewColumnTimer();
     void startPlaying();
     void stopPlaying();
     void onTimer();

@@ -3,6 +3,8 @@
 #include <QDebug>
 
 bool running = false;
+int cellSize = 0;
+int reSize = 0;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -34,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     ui->tableView->setAutoScroll(true);
-
+    // ui->tableView->horizontalScrollMode();
 
 
     QPalette pal = palette();
@@ -68,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(startPlaying()));
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onTimer()));
     connect(ui->stopButton, SIGNAL(clicked()), this, SLOT(stopPlaying()));
+    connect(this, SIGNAL(timing()), this, SLOT(updateViewColumnTimer()));
+
 
 }
 
@@ -115,7 +119,7 @@ void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
 
 void MainWindow::updateViewRow(int size)
 {
-    int cellSize = (5 * size) + 5;
+    cellSize = (5 * size) + 5;
 
     for (int row = 0; row < ui->tableView->model()->rowCount(); row++) {
         ui->tableView->setRowHeight(row, cellSize); // pixel height of cells // needs to be resizeable in future
@@ -124,25 +128,55 @@ void MainWindow::updateViewRow(int size)
 
 void MainWindow::updateViewColumn(int size)
 {
-    int cellSize = (5 * size) + 5;
+    reSize = 0;
+    cellSize = (5 * size) + 5;
+    emit timing();
 
-    for (int col = 0; col < ui->tableView->model()->columnCount(); col++) {
-        ui->tableView->setColumnWidth(col, cellSize); // pixel width of cells // needs to be resizeable in future
+}
+
+void MainWindow::updateViewColumnTimer()
+{
+    // pixel width of cells // needs to be resizeable in future
+
+        ui->tableView->setColumnWidth(reSize, cellSize);
+        reSize = reSize + 1;
+    if( reSize != 86399){
+        QTimer::singleShot(1, this, SLOT(updateViewColumnTimer()));
+    }
+    else{
+        qWarning() << "here";
+        reSize = 0;
     }
 }
 
 void MainWindow::startPlaying(){
     QPropertyAnimation *animation = new QPropertyAnimation(ui->scrollingLine, "geometry");
-    animation->setDuration(10000);
-    animation->setStartValue(QRect(ui->tableView->x() + ui->tableView->verticalHeader()->width(), // place at beginning of first column
+
+    QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
+    QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
+    QModelIndex current = ui->tableView-> currentIndex();
+    int start = ( (( (current.column() - left.column()))));
+    int stop = ( (( (right.column() - left.column())))/5);
+
+    animation->setStartValue(QRect(ui->tableView->x() + ui->tableView->verticalHeader()->width() + (start *  ui->tableView->columnWidth(1)), // place at beginning of first column
                                    ui->tableView->y(),
                                    1,
                                    ui->tableView->height() - ui->tableView->horizontalScrollBar()->height())); // don't overlap bottom scroll bar);
-    animation->setEndValue(QRect(ui->tableView->x() + ui->tableView->verticalHeader()->width()+ui->tableView->height(), // place at beginning of first column
+    animation->setEndValue(QRect(ui->tableView->x() + ui->tableView->verticalHeader()->width() + (stop * ui->tableView->columnWidth(1))-((ui->tableView->columnWidth(1))/2), // place at beginning of first column
                                  ui->tableView->y(),
                                  1,
                                  ui->tableView->height() - ui->tableView->horizontalScrollBar()->height())); // don't overlap bottom scroll bar);
 
+    if( current.column() < stop){
+        int spacer = stop - start;
+        animation->setDuration( spacer * 25  );
+
+    }
+    else{
+        int spacer = start - stop ;
+        animation->setDuration( spacer * 25  );
+
+    }
     connect(animation, SIGNAL(finished()), animation, SLOT(deleteLater()));
     connect(ui->stopButton, SIGNAL(clicked()), animation, SLOT(stop()));
 
@@ -160,7 +194,7 @@ void MainWindow::stopPlaying(){
 void MainWindow::onTimer()
 {
     QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
-                ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() +1 );
+                ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + 1);
     if(nextIndex.isValid() && running == true){
         ui->tableView->setCurrentIndex(nextIndex);
         QTimer::singleShot(25, this, SLOT(onTimer()));
@@ -173,8 +207,14 @@ void MainWindow::onTimer()
 
 void MainWindow::onTimerScroll()
 {
-        ui->tableView->horizontalScrollBar()->setValue(ui->tableView->horizontalScrollBar()->sliderPosition() + 2);
+    QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
+    QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
+        int delay = ( ((3 * (right.column() - left.column())))/4);
+        QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
+                    ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + delay );
+        ui->tableView->scrollTo(nextIndex, QAbstractItemView::EnsureVisible);
 }
+
 
 
 

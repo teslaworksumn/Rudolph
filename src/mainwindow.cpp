@@ -14,14 +14,23 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     QMainWindow::showMaximized(); // make Rudolph maximized on startup
 
-    ui->tableView->installEventFilter(this);
-    QAbstractTableModel *CellRender = new CellRenderer(this);
 
+    QAbstractTableModel *CellRender = new CellRenderer(this);
+    QAbstractTableModel *header = new timeDisplay(this);
+
+
+    ui->tableView->installEventFilter(this);
     ui->tableView->setModel(CellRender);
+    ui->timeHeader->setModel(header);
     QAbstractItemDelegate *GridPainter = new GridDelegate(this);
 
     ui->tableView->setItemDelegate(GridPainter);
     ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->tableView->horizontalHeader()->setSectionResizeMode (QHeaderView::Fixed);
+    ui->tableView->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
+    ui->timeHeader->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+
+
 
     QString sequenceName = "current";
     Sequence *currentSequence = new Sequence(CellRender->rowCount(),CellRender->columnCount(),25,sequenceName);
@@ -45,7 +54,6 @@ MainWindow::MainWindow(QWidget *parent)
         colSize->addAction(resizeCol);
     }
     connect ( signalMapperRow, SIGNAL(mapped(int)),this, SLOT(updateViewRow(int)));
-
     connect ( signalMapperCol, SIGNAL(mapped(int)),this, SLOT(updateViewColumn(int)));
 
     ui->tableView->setAutoScroll(true);
@@ -57,22 +65,22 @@ MainWindow::MainWindow(QWidget *parent)
     QPalette pal = palette();
     pal.setColor(QPalette::Background, Qt::red); // TODO: make color a user option(?)
 
-    ui->scrollingLine->setGeometry(ui->tableView->x() + ui->tableView->verticalHeader()->width(), // place at beginning of first column
-                                   ui->tableView->y(),
-                                   1,
-                                   ui->tableView->height() - ui->tableView->horizontalScrollBar()->height()); // don't overlap bottom scroll bar
-    ui->scrollingLine->setAutoFillBackground(true);
-    ui->scrollingLine->setPalette(pal);
-    ui->scrollingLine->show();
 
+
+    //ui->tableView->setSpan(0,0,2,2);
 
     for (int col = 0; col < CellRender->columnCount(); col++) {
         ui->tableView->setColumnWidth(col, 15); // pixel width of cells // needs to be resizeable in future
+        ui->timeHeader->setColumnWidth(col, (15 * 40));
     }
 
     for (int row = 0; row < CellRender->rowCount(); row++) {
-        ui->tableView->setRowHeight(row, 15); // pixel height of cells // needs to be resizeable in future
+        ui->tableView->setRowHeight(row, 15);
+        ui->timeHeader->setRowHeight(row, 15);
+        // pixel height of cells // needs to be resizeable in future
     }
+
+
 
     //transfer changes to the model to the window title
     connect(ui->tableView, SIGNAL(doubleClicked(const QModelIndex &)), CellRender, SLOT(editData(const QModelIndex &)));
@@ -80,8 +88,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionSave, SIGNAL(triggered(bool)), currentSequence, SLOT(save()));
     connect(ui->actionLoad, SIGNAL(triggered(bool)), currentSequence, SLOT(load()));
     connect(this, SIGNAL(save()), currentSequence, SLOT(save()));
-    connect(ui->rowSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewRow(int)));
-    connect(ui->columnSizeBox, SIGNAL(currentIndexChanged(int)), this, SLOT(updateViewColumn(int)));
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(startPlaying()));
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onTimer()));
     connect(ui->stopButton, SIGNAL(clicked()), this, SLOT(stopPlaying()));
@@ -125,10 +131,7 @@ MainWindow::~MainWindow() {
 void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
     ui->tableView->resize((resizeEvent->size()) - QSize(60,90));
-    ui->scrollingLine->setGeometry(ui->tableView->x() + ui->tableView->verticalHeader()->width(), // place at beginning of first column
-                                   ui->tableView->y(),
-                                   1,
-                                   ui->tableView->height() - ui->tableView->horizontalScrollBar()->height()); // don't overlap bottom scroll bar
+    ui->timeHeader->resize((resizeEvent->size()) - QSize(60,1000));
 }
 
 
@@ -153,8 +156,8 @@ void MainWindow::updateViewColumnTimer()
 {
     // pixel width of cells // needs to be resizeable in future
 
-        ui->tableView->setColumnWidth(reSize, cellSize);
-        reSize = reSize + 1;
+    ui->tableView->setColumnWidth(reSize, cellSize);
+    reSize = reSize + 1;
     if( reSize != 86399){
         QTimer::singleShot(1, this, SLOT(updateViewColumnTimer()));
     }
@@ -165,7 +168,8 @@ void MainWindow::updateViewColumnTimer()
 }
 
 void MainWindow::startPlaying(){
-    QPropertyAnimation *animation = new QPropertyAnimation(ui->scrollingLine, "geometry");
+    QFrame * scrollLine = new QFrame();
+    QPropertyAnimation *animation = new QPropertyAnimation( scrollLine, "geometry");
 
     QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
     QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
@@ -224,11 +228,11 @@ void MainWindow::onTimerScroll()
 {
     QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
     QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
-        int thirds = (3*(right.column() - left.column()));
-        int delay = (thirds/4);
-        QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
-                    ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + delay +2 ); // weird column matching here
-        ui->tableView->scrollTo(nextIndex, QAbstractItemView::EnsureVisible);
+    int thirds = (3*(right.column() - left.column()));
+    int delay = (thirds/4);
+    QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
+                ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + delay +2 ); // weird column matching here
+    ui->tableView->scrollTo(nextIndex, QAbstractItemView::EnsureVisible);
 }
 
 

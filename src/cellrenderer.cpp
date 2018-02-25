@@ -43,7 +43,7 @@ QVariant CellRenderer::headerData(int section, const Qt::Orientation orientation
     {
       int time = section * timeInterval;
       if(time % 1000 == 0 ){
-          return QString ("|\n|");
+          return (QString ("|\n|"));
       }
       else{
           return QString("|");

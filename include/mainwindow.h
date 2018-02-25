@@ -7,6 +7,8 @@
 #include <QAbstractTableModel>
 #include <QTableView>
 #include "./include/cellrenderer.h"
+#include "./include/timedisplay.h"
+
 #include "./include/griddelegate.h"
 #include "./include/sequence.h"
 #include "ui_mainwindow.h"

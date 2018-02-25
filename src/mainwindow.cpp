@@ -61,6 +61,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->tableView->setAutoScroll(true);
     ui->tableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->timeHeader->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->tableView->horizontalScrollBar()->setRange(0,84600);
+    ui->timeHeader->horizontalScrollBar()->setRange(0,86400);
     ui->timeHeader->horizontalHeader()->hide();
     ui->timeHeader->verticalHeader()->setFixedSize(QSize(ui->tableView->verticalHeader()->size()));
     ui->playButton->setText("\u25B6");
@@ -71,13 +74,11 @@ MainWindow::MainWindow(QWidget *parent)
     pal.setColor(QPalette::Background, Qt::red); // TODO: make color a user option(?)
     ui->timeHeader->horizontalScrollBar()->setStyleSheet("QScrollBar {height:0px;}");
     ui->scrollLine->hide();
-    ui->tableView->horizontalScrollBar()->setRange(0,84600);
-    ui->timeHeader->horizontalScrollBar()->setRange(0,86400);
 
 
     //ui->tableView->setSpan(0,0,2,2);
 
-    for (int col = 0; col < CellRender->columnCount(); col++) {
+    for (int col = 0; col <= CellRender->columnCount(); col++) {
         ui->tableView->setColumnWidth(col, 15);
         ui->timeHeader->setColumnWidth(col, 15); // pixel width of cells // needs to be resizeable in future
         // pixel width of cells // needs to be resizeable in future
@@ -86,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
-    for (int row = 0; row < CellRender->rowCount(); row++) {
+    for (int row = 0; row <= CellRender->rowCount(); row++) {
         ui->tableView->setRowHeight(row, 15);
         ui->timeHeader->setRowHeight(row, 15);
         // pixel height of cells // needs to be resizeable in future
@@ -106,7 +107,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, SIGNAL(timingHigher()), this, SLOT(updateViewColumnTimerHigher()));
     connect(this, SIGNAL(timingLower()), this, SLOT(updateViewColumnTimerLower()));
     connect(ui->tableView->horizontalScrollBar(), SIGNAL(valueChanged(int)),
-            this, SLOT(syncScroll(int)));
+            ui->timeHeader->horizontalScrollBar(), SLOT(setValue(int)));
+    connect(ui->timeHeader->horizontalScrollBar(), SIGNAL(valueChanged(int)),
+            ui->tableView->horizontalScrollBar(), SLOT(setValue(int)));
 
 
 

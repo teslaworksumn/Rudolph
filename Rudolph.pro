@@ -4,11 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += widgets core gui testlib
+QT       += widgets core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = main
+TARGET = Rudolph
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use

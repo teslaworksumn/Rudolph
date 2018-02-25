@@ -25,10 +25,10 @@ int main(int argc, char *argv[])
     a.setWindowIcon(QIcon(":teslaworks.ico"));
     MainWindow w;
     QTimer::singleShot(2500, &splash, SLOT(close()));
-    QTimer::singleShot(2500, &w, SLOT(show()));
+    //QTimer::singleShot(2500, &w, SLOT(show()));
     w.setWindowTitle("Rudolph");
     w.show();
     //splash.finish(&w);
-     //delete splash;
+    //delete &splash;
     return a.exec();
 }

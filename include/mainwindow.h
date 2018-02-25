@@ -39,22 +39,15 @@ protected:
 signals:
     void space(const QModelIndexList &);
     void save();
-    void stopLine();
-    void timingHigher();
-    void timingLower();
-
-
 
 public slots:
     void updateViewRow(int size);
     void updateViewColumn(int size);
-    void updateViewColumnTimerHigher();
-    void updateViewColumnTimerLower();
     void startPlaying();
     void stopPlaying();
     void onTimer();
     void onTimerScroll();
-    void syncScroll(int value);
+
 
 };
 

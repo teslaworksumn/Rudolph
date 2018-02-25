@@ -20,7 +20,7 @@ int timeDisplay::columnCount(const QModelIndex & /*parent*/) const
 QVariant timeDisplay::data(const QModelIndex &index, int role) const
 {
     if(index.row() == 0 && role == Qt::DisplayRole) {
-        if(index.column() % 10 == 0){
+        if(index.column() % 40 == 0){
         int second = index.column() / 60;
 
         QString timeString;

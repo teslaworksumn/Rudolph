@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>60</y>
-      <width>256</width>
-      <height>192</height>
+      <y>70</y>
+      <width>1171</width>
+      <height>631</height>
      </rect>
     </property>
    </widget>
@@ -55,15 +55,32 @@
      <rect>
       <x>60</x>
       <y>40</y>
-      <width>256</width>
-      <height>51</height>
+      <width>1171</width>
+      <height>491</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QFrame" name="scrollLine">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>290</y>
+      <width>120</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
     </property>
    </widget>
    <zorder>timeHeader</zorder>
    <zorder>playButton</zorder>
    <zorder>stopButton</zorder>
    <zorder>tableView</zorder>
+   <zorder>scrollLine</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

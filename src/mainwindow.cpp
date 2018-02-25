@@ -3,9 +3,12 @@
 #include <QDebug>
 
 bool running = false;
-int cellSize = 0;
-int reSize = 0;
+int cellSize = 15;
+int reSizeHigher = 0;
+int reSizeLower = 0;
 
+int spacer = 0;
+int rightStart = 0;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
@@ -57,21 +60,30 @@ MainWindow::MainWindow(QWidget *parent)
     connect ( signalMapperCol, SIGNAL(mapped(int)),this, SLOT(updateViewColumn(int)));
 
     ui->tableView->setAutoScroll(true);
-
+    ui->tableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->timeHeader->horizontalHeader()->hide();
+    ui->timeHeader->verticalHeader()->setFixedSize(QSize(ui->tableView->verticalHeader()->size()));
     ui->playButton->setText("\u25B6");
     ui->stopButton->setText("\u25FC");
 
 
     QPalette pal = palette();
     pal.setColor(QPalette::Background, Qt::red); // TODO: make color a user option(?)
-
+    ui->timeHeader->horizontalScrollBar()->setStyleSheet("QScrollBar {height:0px;}");
+    ui->scrollLine->hide();
+    ui->tableView->horizontalScrollBar()->setRange(0,84600);
+    ui->timeHeader->horizontalScrollBar()->setRange(0,86400);
 
 
     //ui->tableView->setSpan(0,0,2,2);
 
     for (int col = 0; col < CellRender->columnCount(); col++) {
-        ui->tableView->setColumnWidth(col, 15); // pixel width of cells // needs to be resizeable in future
-        ui->timeHeader->setColumnWidth(col, (15 * 40));
+        ui->tableView->setColumnWidth(col, 15);
+        ui->timeHeader->setColumnWidth(col, 15); // pixel width of cells // needs to be resizeable in future
+        // pixel width of cells // needs to be resizeable in future
+        if( col % 40 == 0){
+        ui->timeHeader->setSpan(0, col, 40, 40); // HARD CODE
+        }
     }
 
     for (int row = 0; row < CellRender->rowCount(); row++) {
@@ -91,7 +103,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(startPlaying()));
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onTimer()));
     connect(ui->stopButton, SIGNAL(clicked()), this, SLOT(stopPlaying()));
-    connect(this, SIGNAL(timing()), this, SLOT(updateViewColumnTimer()));
+    connect(this, SIGNAL(timingHigher()), this, SLOT(updateViewColumnTimerHigher()));
+    connect(this, SIGNAL(timingLower()), this, SLOT(updateViewColumnTimerLower()));
+    connect(ui->tableView->horizontalScrollBar(), SIGNAL(valueChanged(int)),
+            this, SLOT(syncScroll(int)));
+
+
+
+
 
 
 }
@@ -130,8 +149,17 @@ MainWindow::~MainWindow() {
 
 void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
-    ui->tableView->resize((resizeEvent->size()) - QSize(60,90));
+    ui->tableView->resize((resizeEvent->size()) - QSize(60,115));
     ui->timeHeader->resize((resizeEvent->size()) - QSize(60,1000));
+    ui->timeHeader->move(ui->tableView->x(), (ui->tableView->y()) - (ui->timeHeader->rowHeight(0)));
+}
+
+
+void MainWindow::syncScroll(int value)
+{
+    //int set = (value * 255) / cellSize;
+    int set = (value /15);
+    ui->timeHeader->horizontalScrollBar()->setValue(set);
 }
 
 
@@ -146,31 +174,65 @@ void MainWindow::updateViewRow(int size)
 
 void MainWindow::updateViewColumn(int size)
 {
-    reSize = 0;
-    cellSize = (5 * size) + 5;
-    emit timing();
+    reSizeHigher = ui->tableView->indexAt(ui->tableView->rect().topLeft()).column();
+    reSizeLower = ui->tableView->indexAt(ui->tableView->rect().topLeft()).column();
+    rightStart = ui->tableView->indexAt(ui->tableView->rect().bottomRight()).column();
+    int currentSpacer = ui->tableView->columnWidth(1) * (rightStart - ui->tableView->currentIndex().column())  ;
 
+
+    cellSize = (5 * size) + 5;
+    spacer = currentSpacer / cellSize;
+    emit timingHigher();
+    emit timingLower();
 }
 
-void MainWindow::updateViewColumnTimer()
+void MainWindow::updateViewColumnTimerHigher()
 {
     // pixel width of cells // needs to be resizeable in future
 
-    ui->tableView->setColumnWidth(reSize, cellSize);
-    reSize = reSize + 1;
-    if( reSize != 86399){
-        QTimer::singleShot(1, this, SLOT(updateViewColumnTimer()));
+    ui->tableView->setColumnWidth(reSizeHigher, cellSize);
+    ui->timeHeader->setColumnWidth(reSizeHigher, cellSize);
+
+    reSizeHigher = reSizeHigher + 1;
+    if( reSizeHigher != 86399){ // hard code value
+        QTimer::singleShot(1, this, SLOT(updateViewColumnTimerHigher()));
+
     }
+
     else{
-        qWarning() << "here";
-        reSize = 0;
+        return;
+    }
+}
+void MainWindow::updateViewColumnTimerLower()
+{
+    // pixel width of cells // needs to be resizeable in future
+
+    QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
+                ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + spacer); // weird column matching here
+
+
+    ui->tableView->setColumnWidth(reSizeLower, cellSize);
+    ui->timeHeader->setColumnWidth(reSizeLower, cellSize);
+
+    reSizeLower = reSizeLower -1;
+
+    if (reSizeLower != 0) {
+        ui->tableView->scrollTo(nextIndex, QAbstractItemView::	EnsureVisible);
+
+        QTimer::singleShot(1, this, SLOT(updateViewColumnTimerLower()));
+}
+    else{
+        return;
     }
 }
 
 void MainWindow::startPlaying(){
-    QFrame * scrollLine = new QFrame();
-    QPropertyAnimation *animation = new QPropertyAnimation( scrollLine, "geometry");
-
+    ui->scrollLine->setGeometry(QRect(ui->tableView->x() + ui->tableView->verticalHeader()->width(), // place at beginning of first column
+                                  ui->tableView->y(),
+                                  1,
+                                  ui->tableView->height() - ui->tableView->horizontalScrollBar()->height())); // don't overlap bottom scroll bar););
+    QPropertyAnimation *animation = new QPropertyAnimation(ui->scrollLine, "geometry");
+    ui->scrollLine->show();
     QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
     QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
     QModelIndex current = ui->tableView-> currentIndex();

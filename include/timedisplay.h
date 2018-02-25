@@ -3,7 +3,7 @@
 
 #include <QAbstractTableModel>
 
-const int columnheader= 21600;
+const int columnheader= 86400;
 const int rowheader= 1;
 const int timeIntervalHeader = 25;
 

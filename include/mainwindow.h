@@ -40,17 +40,21 @@ signals:
     void space(const QModelIndexList &);
     void save();
     void stopLine();
-    void timing();
+    void timingHigher();
+    void timingLower();
+
 
 
 public slots:
     void updateViewRow(int size);
     void updateViewColumn(int size);
-    void updateViewColumnTimer();
+    void updateViewColumnTimerHigher();
+    void updateViewColumnTimerLower();
     void startPlaying();
     void stopPlaying();
     void onTimer();
     void onTimerScroll();
+    void syncScroll(int value);
 
 };
 

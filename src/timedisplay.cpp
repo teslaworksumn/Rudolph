@@ -1,4 +1,5 @@
 #include "./include/timedisplay.h"
+#include <QDebug>
 
 timeDisplay::timeDisplay(QObject *parent)
     :QAbstractTableModel(parent)
@@ -18,28 +19,50 @@ int timeDisplay::columnCount(const QModelIndex & /*parent*/) const
 
 QVariant timeDisplay::data(const QModelIndex &index, int role) const
 {
-   if(index.isValid() != true || role)
-    return QVariant();
-   return QVariant();
+    if(index.row() == 0 && role == Qt::DisplayRole) {
+        if(index.column() % 10 == 0){
+        int second = index.column() / 60;
+
+        QString timeString;
+        if  (second > 60){
+            if (second % 60 < 10){
+            timeString.push_back(QString::number(second / 60));
+            timeString.push_back(":");
+            timeString.push_back(QString::number(0));
+
+            timeString.push_back(QString::number(second % 60));
+        }
+            else {
+                timeString.push_back(QString::number(second / 60));
+                timeString.push_back(":");
+                timeString.push_back(QString::number(second % 60));
+            }
+
+            }
+        else{
+            if (second < 10){
+                timeString.push_back(":");
+                timeString.push_back(QString::number(0));
+                timeString.push_back(QString::number(second));
+            }
+            else{
+                timeString.push_back(":");
+                timeString.push_back(QString::number(second));
+
+            }
+        }
+
+        return timeString;
+        }
+    }
+    return QString();
 }
 QVariant timeDisplay::headerData(int section, const Qt::Orientation orientation, int role) const
 {
     // HORIZONTAL HEADER: (timeline)
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
-      int time = section * timeIntervalHeader;
-      int minute = time / 60;
-      int second = time % 60;
-      QString timeString = QString::number(minute);
-      timeString.append( ":");
-      if(second<=9){
-          timeString.append("0");
-          timeString.append(second);
-      }
-      else{
-          timeString.append(second);
-      }
-      return timeString;
+         return QVariant();
     }
 
     // VERTICAL HEADER: PUs
@@ -47,7 +70,7 @@ QVariant timeDisplay::headerData(int section, const Qt::Orientation orientation,
 
     {
         QString sectionString = QVariant(section).toString();
-        return QString("Channel1024");
+        return QString();
 
     }
     return QVariant();

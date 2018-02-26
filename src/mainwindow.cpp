@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableView->horizontalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     ui->tableView->verticalHeader()->setSectionResizeMode (QHeaderView::Fixed);
     ui->timeHeader->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+    ui->timeHeader->move(ui->tableView->x(), (ui->tableView->y()) - (ui->timeHeader->rowHeight(0)));
 
 
     QString sequenceName = "current";
@@ -66,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent)
     pal.setColor(QPalette::Background, Qt::red); // TODO: make color a user option(?)
     ui->timeHeader->horizontalScrollBar()->setStyleSheet("QScrollBar {height:0px;}");
     ui->scrollLine->hide();
-    ui->tableView->setFont(QFont( "Arial", 5, QFont::Bold));
+    ui->tableView->setFont(QFont( "Arial", 11, QFont::Bold));
 
 
 
@@ -95,19 +96,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionLoad, SIGNAL(triggered(bool)), currentSequence, SLOT(load()));
     connect(this, SIGNAL(save()), currentSequence, SLOT(save()));
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(startPlaying()));
-    connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onTimerScroll()));
+    connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onTimer()));
     connect(ui->stopButton, SIGNAL(clicked()), this, SLOT(stopPlaying()));
+
     connect(ui->tableView->horizontalScrollBar(), SIGNAL(valueChanged(int)),
             ui->timeHeader->horizontalScrollBar(), SLOT(setValue(int)));
     connect(ui->timeHeader->horizontalScrollBar(), SIGNAL(valueChanged(int)),
             ui->tableView->horizontalScrollBar(), SLOT(setValue(int)));
-
-
-
-
-
-
 }
+
+
+
 
 bool MainWindow::eventFilter(QObject *object, QEvent *e)
 {
@@ -214,68 +213,44 @@ void MainWindow::startPlaying(){
 
 void MainWindow::stopPlaying(){
     running = false;
+    ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     setFocus();
-
 }
 
 
 void MainWindow::onTimer()
 {
-    QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
-                ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + 1);
-    if(nextIndex.isValid() && running == true){
-        ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(onTimerScroll()));
+    timer->setTimerType(Qt::PreciseTimer);
+    connect(ui->stopButton, SIGNAL(clicked(bool)), timer, SLOT(stop()));
+    timer->start(25);
 
-        ui->tableView->setCurrentIndex(nextIndex);
-        ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
 
-        QTimer::singleShot(25, this, SLOT(onTimer()));
-        QTimer::singleShot(1, this, SLOT(onTimerScroll()));
-    }
-    else{
-        ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-
-        return;
-    }
 }
 
 void MainWindow::onTimerScroll()
 {
 
     if(running == true){
-        for(int i = 0; i < 2; i++){
         QModelIndex nextIndex1 = ui->tableView->currentIndex().sibling(
                     ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + 1);
         if(nextIndex1.isValid()){
 
-        ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        ui->tableView->setCurrentIndex(nextIndex1);
-        ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
-        QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
-        QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
-        int stop = ( (( (right.column() - left.column())))/5);
-        QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
-                    ui->tableView->currentIndex().row(), ui->tableView->indexAt(QPoint( ui->tableView->verticalHeader()->width() + (stop * ui->tableView->columnWidth(1)) , ui->tableView->currentIndex().row())).column() );
+            ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+            ui->tableView->setCurrentIndex(nextIndex1);
+            ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
+            QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
+            QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
+            int stop = ( (( (right.column() - left.column())))/5);
+            QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
+                        ui->tableView->currentIndex().row(), ui->tableView->indexAt(QPoint( ui->tableView->verticalHeader()->width() + (stop * ui->tableView->columnWidth(1)) , ui->tableView->currentIndex().row())).column() );
 
-       QModelIndex scrollIndex = ui->tableView->currentIndex().sibling(
-                        ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + (right.column() - nextIndex.column()) );
+            QModelIndex scrollIndex = ui->tableView->currentIndex().sibling(
+                        ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + (right.column() - nextIndex.column())  - 1);
             ui->tableView->scrollTo(scrollIndex);
-           }
-}
-            QTimer::singleShot(25, this, SLOT(onTimerScroll()));
-
+        }
     }
-    else{
-        ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-
-        return;
-    }
-
-
-
-//    else{
-//    ui->tableView->horizontalScrollBar()->setValue(ui->tableView->horizontalScrollBar()->value() + ui->tableView->columnWidth(1) );
-//    }
 }
 
 

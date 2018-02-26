@@ -20,8 +20,8 @@ int timeDisplay::columnCount(const QModelIndex & /*parent*/) const
 QVariant timeDisplay::data(const QModelIndex &index, int role) const
 {
     if(index.row() == 0 && role == Qt::DisplayRole) {
-        if(index.column() % 40 == 0){
-        int second = index.column() / 60;
+        if(index.column() % 40 == 0){ // hard code
+        int second = index.column() /40; // hard code
 
         QString timeString;
         if  (second > 60){
@@ -29,9 +29,8 @@ QVariant timeDisplay::data(const QModelIndex &index, int role) const
             timeString.push_back(QString::number(second / 60));
             timeString.push_back(":");
             timeString.push_back(QString::number(0));
-
             timeString.push_back(QString::number(second % 60));
-        }
+            }
             else {
                 timeString.push_back(QString::number(second / 60));
                 timeString.push_back(":");

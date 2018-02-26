@@ -111,6 +111,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionNew_Sequence"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -148,6 +149,11 @@
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
+   </property>
+  </action>
+  <action name="actionNew_Sequence">
+   <property name="text">
+    <string>New Sequence</string>
    </property>
   </action>
  </widget>

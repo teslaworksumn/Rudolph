@@ -1,6 +1,5 @@
 #include "./include/mainwindow.h"
-
-
+#include "./include/newsequencedialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -117,9 +116,8 @@ void MainWindow::updateViewColumn(int size)
     }
 }
 
-
-
-
-
-
-
+void MainWindow::on_actionNew_Sequence_triggered()
+{
+    NewSequenceDialog * harry = new NewSequenceDialog();
+    harry->show();
+}

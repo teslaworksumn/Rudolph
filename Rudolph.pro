@@ -31,15 +31,19 @@ SOURCES += \
         ./src/cellrenderer.cpp \
         ./src/griddelegate.cpp \
         ./src/sequence.cpp \
-        ./src/project.cpp  \
+        ./src/project.cpp \
+        ./src/newsequencedialog.cpp
 
 HEADERS += \
         ./include/mainwindow.h \
         ./include/cellrenderer.h \
         ./include/griddelegate.h \
         ./include/sequence.h \
-        ./include/project.h
+        ./include/project.h \
+        ./include/newsequencedialog.h
+
 
 FORMS += \
-    ./uiforms/mainwindow.ui
+    ./uiforms/mainwindow.ui \
+    ./uiforms/newsequencedialog.ui
 

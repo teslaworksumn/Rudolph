@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     QString sequenceName = "current";
-    Sequence *currentSequence = new Sequence(CellRender->rowCount(),15000,25,sequenceName);
+    Sequence *currentSequence = new Sequence(CellRender->rowCount(),7200,25,sequenceName);
 
     QMenu *rowSize = ui->menuView->addMenu("Row Size");
     QMenu *colSize = ui->menuView->addMenu("Column Size");
@@ -55,10 +55,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect ( signalMapperCol, SIGNAL(mapped(int)),this, SLOT(updateViewColumn(int)));
 
     ui->tableView->setAutoScroll(true);
-    ui->tableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    ui->timeHeader->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-    ui->tableView->horizontalScrollBar()->setRange(0,84600);
-    ui->timeHeader->horizontalScrollBar()->setRange(0,86400);
+    ui->tableView->setHorizontalScrollMode(QAbstractItemView::ScrollPerItem);
+    ui->timeHeader->setHorizontalScrollMode(QAbstractItemView::ScrollPerItem);
     ui->timeHeader->horizontalHeader()->hide();
     ui->timeHeader->verticalHeader()->setFixedSize(QSize(ui->tableView->verticalHeader()->size()));
     ui->playButton->setText("\u25B6");
@@ -85,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->timeHeader->setRowHeight(row, 15);
         // pixel height of cells // needs to be resizeable in future
     }
+    //ui->tableView->horizontalScrollBar()->setSingleStep(ui->tableView->columnWidth(1));
 
 
 
@@ -95,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionLoad, SIGNAL(triggered(bool)), currentSequence, SLOT(load()));
     connect(this, SIGNAL(save()), currentSequence, SLOT(save()));
     connect(ui->playButton, SIGNAL(clicked()), this, SLOT(startPlaying()));
-    connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onTimer()));
+    connect(ui->playButton, SIGNAL(clicked()), this, SLOT(onTimerScroll()));
     connect(ui->stopButton, SIGNAL(clicked()), this, SLOT(stopPlaying()));
     connect(ui->tableView->horizontalScrollBar(), SIGNAL(valueChanged(int)),
             ui->timeHeader->horizontalScrollBar(), SLOT(setValue(int)));
@@ -241,20 +240,41 @@ void MainWindow::onTimer()
 
 void MainWindow::onTimerScroll()
 {
-    QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
-    QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
-    int stop = ( (( (right.column() - left.column())))/5);
-    QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
-                ui->tableView->currentIndex().row(), ui->tableView->indexAt(QPoint( ui->tableView->x() + ui->tableView->verticalHeader()->width() + (stop * ui->tableView->columnWidth(1)) , ui->tableView->currentIndex().row())).column() );
 
-    if(ui->tableView->currentIndex().column() != nextIndex.column()){
-        QModelIndex scrollIndex = ui->tableView->currentIndex().sibling(
-                    ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + (right.column() - nextIndex.column()) );
-        ui->tableView->scrollTo(scrollIndex, QAbstractItemView::EnsureVisible);
+    if(running == true){
+        //for(int i = 0; i < 2; i++){
+        QModelIndex nextIndex1 = ui->tableView->currentIndex().sibling(
+                    ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + 1);
+        if(nextIndex1.isValid()){
+
+        ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+        ui->tableView->setCurrentIndex(nextIndex1);
+        ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
+        QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
+        QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
+        int stop = ( (( (right.column() - left.column())))/5);
+        QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
+                    ui->tableView->currentIndex().row(), ui->tableView->indexAt(QPoint( ui->tableView->verticalHeader()->width() + (stop * ui->tableView->columnWidth(1)) , ui->tableView->currentIndex().row())).column() );
+
+       QModelIndex scrollIndex = ui->tableView->currentIndex().sibling(
+                        ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + (right.column() - nextIndex.column()) );
+            ui->tableView->scrollTo(scrollIndex);
+         //   }
+}
+            QTimer::singleShot(25, this, SLOT(onTimerScroll()));
+
     }
     else{
-    ui->tableView->horizontalScrollBar()->setValue(ui->tableView->horizontalScrollBar()->value()+ui->tableView->columnWidth(1));
+        ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+        return;
     }
+
+
+
+//    else{
+//    ui->tableView->horizontalScrollBar()->setValue(ui->tableView->horizontalScrollBar()->value() + ui->tableView->columnWidth(1) );
+//    }
 }
 
 

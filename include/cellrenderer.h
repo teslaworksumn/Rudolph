@@ -3,12 +3,13 @@
 
 #include <QAbstractTableModel>
 #include <QString>
+#include <QList>
 
 
 const int COLS= 86400;
 const int ROWS= 1024;
 const int timeInterval = 25;
-extern int gridData[ROWS][COLS];
+extern QList< QList< uint8_t > > gridData;
 
 
 
@@ -25,7 +26,6 @@ public:
 public slots:
     void editData(const QModelIndex & index);
     void editDataSpace(const QModelIndexList & index);
-    //void save();
 };
 
 

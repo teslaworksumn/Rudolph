@@ -31,15 +31,19 @@ SOURCES += \
         ./src/cellrenderer.cpp \
         ./src/griddelegate.cpp \
         ./src/sequence.cpp \
-        ./src/project.cpp  \
+        ./src/newwizard.cpp \
+        ./src/timedisplay.cpp
 
 HEADERS += \
         ./include/mainwindow.h \
         ./include/cellrenderer.h \
         ./include/griddelegate.h \
         ./include/sequence.h \
-        ./include/project.h
+        ./include/timedisplay.h
 
 FORMS += \
     ./uiforms/mainwindow.ui
+
+RESOURCES += \
+    ./resources/teslaworks.qrc
 

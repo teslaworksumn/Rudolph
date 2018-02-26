@@ -1,11 +1,22 @@
 #include "./include/cellrenderer.h"
 #include <QBrush>
 #include <QVariant>
+#include <QList>
 
-int gridData[ROWS][COLS];
+QList< QList< uint8_t > > gridData;
+
+
 CellRenderer::CellRenderer(QObject *parent)
     :QAbstractTableModel(parent)
 {
+
+    for (int i = 0; i < COLS; i++) {
+        QList<uint8_t> col;
+        for (int j = 0; j < ROWS; j++) {
+            col.push_back(0);
+        }
+        gridData.append(col);
+    }
 
 }
 
@@ -32,45 +43,44 @@ QVariant CellRenderer::headerData(int section, const Qt::Orientation orientation
     {
       int time = section * timeInterval;
       if(time % 1000 == 0 ){
-          return QString ("|\n|");
+          return (QString ("|\n|"));
       }
       else{
           return QString("|");
       }
-
-
     }
 
     // VERTICAL HEADER: PUs
     if (orientation == Qt::Vertical && role == Qt::DisplayRole)
 
     {
+        QString channel = QString("Channel");
         QString sectionString = QVariant(section).toString();
         return QString("Channel") + sectionString;
 
-            }
+    }
     return QVariant();
 
 }
 
 void CellRenderer::editData(const QModelIndex & index)
 {
-    if(gridData[index.row()][index.column()] == 255){
-    gridData[index.row()][index.column()] = 0;
+    if(gridData[index.column()][index.row()] == 255){
+    gridData[index.column()][index.row()] = 0;
     }
     else {
-        gridData[index.row()][index.column()] = 255;
+        gridData[index.column()][index.row()] = 255;
     }
 }
 
 void CellRenderer::editDataSpace(const QModelIndexList & indexList)
 {
     for(QModelIndex index :indexList){
-        if(gridData[index.row()][index.column()] == 255){
-        gridData[index.row()][index.column()] = 0;
+        if(gridData[index.column()][index.row()] == 255){
+        gridData[index.column()][index.row()] = 0;
         }
         else {
-            gridData[index.row()][index.column()] = 255;
+            gridData[index.column()][index.row()] = 255;
         }
     }
 }

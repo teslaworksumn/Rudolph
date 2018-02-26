@@ -66,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     pal.setColor(QPalette::Background, Qt::red); // TODO: make color a user option(?)
     ui->timeHeader->horizontalScrollBar()->setStyleSheet("QScrollBar {height:0px;}");
     ui->scrollLine->hide();
+    ui->tableView->setFont(QFont( "Arial", 5, QFont::Bold));
 
 
 
@@ -242,7 +243,7 @@ void MainWindow::onTimerScroll()
 {
 
     if(running == true){
-        //for(int i = 0; i < 2; i++){
+        for(int i = 0; i < 2; i++){
         QModelIndex nextIndex1 = ui->tableView->currentIndex().sibling(
                     ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + 1);
         if(nextIndex1.isValid()){
@@ -259,7 +260,7 @@ void MainWindow::onTimerScroll()
        QModelIndex scrollIndex = ui->tableView->currentIndex().sibling(
                         ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + (right.column() - nextIndex.column()) );
             ui->tableView->scrollTo(scrollIndex);
-         //   }
+           }
 }
             QTimer::singleShot(25, this, SLOT(onTimerScroll()));
 

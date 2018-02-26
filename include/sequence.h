@@ -9,8 +9,7 @@
 #include <iostream>
 #include <fstream>
 
-extern int ROWS;
-extern int COLS;
+
 
 class Sequence : public QObject
 {
@@ -19,6 +18,8 @@ private:
     QList< QList< uint8_t > > grid;
     QString sequenceName;
     int frame_dur;
+    int ROWS;
+    int COLS;
 
 public:
     Sequence() ;

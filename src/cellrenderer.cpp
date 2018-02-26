@@ -54,6 +54,7 @@ QVariant CellRenderer::headerData(int section, const Qt::Orientation orientation
     if (orientation == Qt::Vertical && role == Qt::DisplayRole)
 
     {
+        QString channel = QString("Channel");
         QString sectionString = QVariant(section).toString();
         return QString("Channel") + sectionString;
 

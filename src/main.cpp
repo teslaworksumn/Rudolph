@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     QTimer::singleShot(2500, &splash, SLOT(close()));
     QTimer::singleShot(2500, &w, SLOT(show()));
     w.setWindowTitle("Rudolph");
-    //w.show();
+    w.showMaximized();
     //splash.finish(&w);
     //delete &splash;
     return a.exec();

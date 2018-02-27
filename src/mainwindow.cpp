@@ -1,5 +1,6 @@
 #include "./include/mainwindow.h"
 #include <QDebug>
+#include <math.h>
 
 bool running = false;
 
@@ -9,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 {
     ui->setupUi(this);
-    QMainWindow::showMaximized(); // make Rudolph maximized on startup
+    //QMainWindow::showMaximized(); // make Rudolph maximized on startup
     ui->timeHeader->move(ui->tableView->x(), (ui->tableView->y()) - (ui->timeHeader->rowHeight(0)));
 
 
@@ -32,11 +33,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     QString sequenceName = "current";
-    Sequence *currentSequence = new Sequence(CellRender->rowCount(),7200,25,sequenceName);
+    Sequence *currentSequence = new Sequence(CellRender->rowCount(),CellRender->columnCount(),25,sequenceName); // does little
 
     QMenu *rowSize = ui->menuView->addMenu("Row Size");
     QMenu *colSize = ui->menuView->addMenu("Column Size");
-    QSignalMapper* signalMapperRow = new QSignalMapper (this) ;
+    QSignalMapper* signalMapperRow = new QSignalMapper (this) ; // consider getting rid of this
     QSignalMapper* signalMapperCol = new QSignalMapper (this) ;
 
     for (int i = 0; i< 10; i++){
@@ -142,8 +143,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::resizeEvent(QResizeEvent *resizeEvent)
 {
-    ui->tableView->resize((resizeEvent->size()) - QSize(60,115));
-    ui->timeHeader->resize((resizeEvent->size()) - QSize(60,1000));
+    ui->tableView->resize((resizeEvent->size()) - QSize(90,115));
+    ui->timeHeader->resize((resizeEvent->size()) - QSize(90,1000));
     ui->timeHeader->move(ui->tableView->x(), (ui->tableView->y()) - (ui->timeHeader->rowHeight(0)));
 }
 
@@ -178,14 +179,20 @@ void MainWindow::startPlaying(){
     QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
     QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
     QModelIndex current = ui->tableView-> currentIndex();
-    int start = ( (( (current.column() - left.column()))));
-    int stop = ( (( (right.column() - left.column())))/5);
+    int start = ((current.column() - left.column()));
+    int stop = ((right.column() - left.column())/5);
+
+
+    int picker[10] = {40,20,20,15,13,11,9,8,7,5};
+    int cellSize = ui->tableView->columnWidth(1);
+    int select = (cellSize /5)-1;
 
     animation->setStartValue(QRect(ui->tableView->x() + ui->tableView->verticalHeader()->width() + (start *  ui->tableView->columnWidth(1)), // place at beginning of first column
                                    ui->tableView->y(),
                                    1,
                                    ui->tableView->height() - ui->tableView->horizontalScrollBar()->height())); // don't overlap bottom scroll bar);
-    animation->setEndValue(QRect(ui->tableView->x() + ui->tableView->verticalHeader()->width() + (stop * ui->tableView->columnWidth(1))-((ui->tableView->columnWidth(1))/2), // place at beginning of first column
+
+    animation->setEndValue(QRect(ui->tableView->x()  + (picker[select] *  ui->tableView->columnWidth(1)), // place at beginning of first column
                                  ui->tableView->y(),
                                  1,
                                  ui->tableView->height() - ui->tableView->horizontalScrollBar()->height())); // don't overlap bottom scroll bar);
@@ -233,23 +240,66 @@ void MainWindow::onTimerScroll()
 {
 
     if(running == true){
-        QModelIndex nextIndex1 = ui->tableView->currentIndex().sibling(
+//        QString os = QSysInfo::productType();
+//        if (os.compare("ubuntu")==0 ){
+
+
+         QModelIndex nextIndex1 = ui->tableView->currentIndex().sibling(
                     ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + 1);
-        if(nextIndex1.isValid()){
 
             ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
             ui->tableView->setCurrentIndex(nextIndex1);
+            //qWarning() <<  nextIndex1.column();
             ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
+
             QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
             QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
-            int stop = ( (( (right.column() - left.column())))/5);
-            QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
-                        ui->tableView->currentIndex().row(), ui->tableView->indexAt(QPoint( ui->tableView->verticalHeader()->width() + (stop * ui->tableView->columnWidth(1)) , ui->tableView->currentIndex().row())).column() );
 
-            QModelIndex scrollIndex = ui->tableView->currentIndex().sibling(
-                        ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + (right.column() - nextIndex.column())  - 1);
-            ui->tableView->scrollTo(scrollIndex);
-        }
+            int stop = ((right.column() - left.column()));
+            int picker[10] = {40,20,20,15,13,11,9,8,7,5};
+            int cellSize = ui->tableView->columnWidth(1);
+            int select = (cellSize /5)-1;
+
+
+                QModelIndex scrollIndex = ui->tableView->currentIndex().sibling(
+                            ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + (stop - picker[select])-1);
+                        ui->tableView->scrollTo(scrollIndex, QAbstractItemView::EnsureVisible);
+
+
+
+            qWarning() << ui->tableView->currentIndex().column();
+            qWarning() << ui->tableView->columnAt(ui->scrollLine->x() - ui->tableView->verticalHeader()->width());
+            qWarning() << "here";
+
+
+
+
+
+       // }
+
+//        else if(os.compare("windows") == 0 || os.compare("mac") == 0){
+//            for(int i = 0; i < 2; i++){
+//                QModelIndex nextIndex1 = ui->tableView->currentIndex().sibling(
+//                           ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + 1);
+//               if(nextIndex1.isValid()){
+
+//                   ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+//                   ui->tableView->setCurrentIndex(nextIndex1);
+//                   ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
+//                   QModelIndex left = ui->tableView->indexAt(ui->tableView->rect().topLeft());
+//                   QModelIndex right = ui->tableView->indexAt(ui->tableView->rect().bottomRight());
+//                   int stop = ( (( (right.column() - left.column())))/5);
+//                   QModelIndex nextIndex = ui->tableView->currentIndex().sibling(
+//                               ui->tableView->currentIndex().row(), ui->tableView->indexAt(QPoint( ui->tableView->verticalHeader()->width() + (stop * ui->tableView->columnWidth(1)) , ui->tableView->currentIndex().row())).column() );
+
+//                   QModelIndex scrollIndex = ui->tableView->currentIndex().sibling(
+//                               ui->tableView->currentIndex().row(), ui->tableView->currentIndex().column() + (right.column() - nextIndex.column())  - 1);
+//                   ui->tableView->scrollTo(scrollIndex);
+//               }
+//            }
+
+//        }
+
     }
 }
 

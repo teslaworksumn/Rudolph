@@ -33,6 +33,8 @@ SOURCES += \
         ./src/sequence.cpp \
         ./src/project.cpp \
         ./src/newsequencedialog.cpp
+        ./src/newwizard.cpp \
+        ./src/timedisplay.cpp
 
 HEADERS += \
         ./include/mainwindow.h \
@@ -41,9 +43,12 @@ HEADERS += \
         ./include/sequence.h \
         ./include/project.h \
         ./include/newsequencedialog.h
-
+        ./include/timedisplay.h
 
 FORMS += \
     ./uiforms/mainwindow.ui \
     ./uiforms/newsequencedialog.ui
+
+RESOURCES += \
+    ./resources/teslaworks.qrc
 

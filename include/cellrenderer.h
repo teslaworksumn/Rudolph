@@ -6,7 +6,7 @@
 #include <QList>
 
 
-const int COLS= 86400;
+const int COLS= 14400;
 const int ROWS= 1024;
 const int timeInterval = 25;
 extern QList< QList< uint8_t > > gridData;

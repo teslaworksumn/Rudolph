@@ -26,6 +26,17 @@ public:
     }
     return NULL;
   }
+  QString saveToFile()
+  {
+      QString fileName = QFileDialog::getSaveFileName(this,
+          tr("Save Sequence"), "",
+          tr("Sequence (*.rud);;All Files (*)"));
+      if( !fileName.isNull() )
+      {
+       return fileName;
+      }
+      return NULL;
+  }
 };
 
 Sequence::Sequence() {
@@ -63,13 +74,9 @@ QList<QList<uint8_t> > Sequence::getGrid() {
 
 void Sequence::save() {
     QString filePath = QDir().homePath();
-    qDebug() << "Home: " << filePath << endl;
 
-    if (QDir(filePath).mkdir("Rudolph")) {
-        qDebug() << "Created folder" << endl;
-    } else {
-        qDebug() << "Could not create folder" << endl;
-    }
+    QDir(filePath).mkdir("Rudolph");
+
 
     QString fileName = filePath + "/Rudolph/" + sequenceName + ".rud";
     QFile file(fileName);

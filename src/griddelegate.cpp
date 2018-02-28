@@ -28,7 +28,7 @@ QSize GridDelegate::sizeHint(const QStyleOptionViewItem &option,
 {
     if(index.isValid()){
         QStyleOptionViewItem error = option;
-        return QSize(1,1);
+        return QSize(1, 1);
     }
     return QSize(1, 1);
 

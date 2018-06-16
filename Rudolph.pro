@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += widgets core gui
+QT       += widgets core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -31,15 +31,18 @@ SOURCES += \
         ./src/cellrenderer.cpp \
         ./src/griddelegate.cpp \
         ./src/sequence.cpp \
-        ./src/project.cpp  \
+        ./src/timedisplay.cpp
 
 HEADERS += \
         ./include/mainwindow.h \
         ./include/cellrenderer.h \
         ./include/griddelegate.h \
         ./include/sequence.h \
-        ./include/project.h
+        ./include/timedisplay.h
 
 FORMS += \
     ./uiforms/mainwindow.ui
+
+RESOURCES += \
+    ./resources/teslaworks.qrc
 

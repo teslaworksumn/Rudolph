@@ -17,59 +17,64 @@
    <widget class="QTableView" name="tableView">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>40</y>
-      <width>256</width>
-      <height>192</height>
+      <x>60</x>
+      <y>70</y>
+      <width>1171</width>
+      <height>631</height>
      </rect>
     </property>
    </widget>
-   <widget class="QComboBox" name="rowSizeBox">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>10</y>
-      <width>65</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QPushButton" name="playButton">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>61</width>
-      <height>16</height>
+      <width>31</width>
+      <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>Row Size</string>
+     <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QPushButton" name="stopButton">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>50</x>
       <y>10</y>
-      <width>91</width>
-      <height>16</height>
+      <width>31</width>
+      <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>Column Size</string>
+     <string/>
     </property>
    </widget>
-   <widget class="QComboBox" name="columnSizeBox">
+   <widget class="QTableView" name="timeHeader">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>10</y>
-      <width>65</width>
-      <height>22</height>
+      <x>60</x>
+      <y>40</y>
+      <width>1171</width>
+      <height>491</height>
      </rect>
     </property>
    </widget>
+   <widget class="QGraphicsView" name="scrollLine">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>350</y>
+      <width>31</width>
+      <height>271</height>
+     </rect>
+    </property>
+   </widget>
+   <zorder>timeHeader</zorder>
+   <zorder>playButton</zorder>
+   <zorder>stopButton</zorder>
+   <zorder>tableView</zorder>
+   <zorder>scrollLine</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -77,7 +82,7 @@
      <x>0</x>
      <y>0</y>
      <width>1249</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -85,6 +90,9 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_As"/>
+    <addaction name="actionLoad"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -114,14 +122,24 @@
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="action10">
-   <property name="text">
-    <string>10%</string>
-   </property>
-  </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionLoad">
+   <property name="text">
+    <string>Load</string>
+   </property>
+  </action>
+  <action name="actionSave_As">
+   <property name="text">
+    <string>Save As</string>
    </property>
   </action>
  </widget>

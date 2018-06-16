@@ -2,15 +2,11 @@
 #define CELLRENDERER_H
 
 #include <QAbstractTableModel>
-#include <QString>
 
-
-const int COLS= 86400;
+const int COLS= 4600;
 const int ROWS= 1024;
 const int timeInterval = 25;
-extern int gridData[ROWS][COLS];
-
-
+extern QList< QList< uint8_t > > gridData;
 
 class CellRenderer : public QAbstractTableModel
 {
@@ -25,8 +21,6 @@ public:
 public slots:
     void editData(const QModelIndex & index);
     void editDataSpace(const QModelIndexList & index);
-    //void save();
 };
-
 
 #endif // CELLRENDERER_H

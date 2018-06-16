@@ -4,9 +4,11 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    a.setWindowIcon(QIcon(":/resources/teslaworks.ico"));
+
+    a.processEvents();
+    a.setWindowIcon(QIcon(":teslaworks.ico"));
     MainWindow w;
-    w.setWindowTitle("Rudolph");
     w.show();
+    w.setWindowTitle("Rudolph");
     return a.exec();
 }
